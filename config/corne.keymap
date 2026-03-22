@@ -10,114 +10,219 @@
 #include <dt-bindings/zmk/outputs.h>
 
 / {
+    chosen {
+        zmk,matrix-transform = &five_column_transform;
+    };
+
     behaviors {
+        /**
+         * @brief Home row modifier behavior
+         * @param binding-cells 2 (modifier, keycode)
+         * @return Outputs modifier on hold, base key on tap
+         */
         hm: homerow_mods {
             compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MODS";
             #binding-cells = <2>;
             tapping-term-ms = <200>;
             quick-tap-ms = <0>;
             flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
         };
-    };
 
-    combos {
-        compatible = "zmk,combos";
-        combo_bt {
-            timeout-ms = <50>;
-            key-positions = <36 41>;
-            bindings = <&mo 5>;
+        /**
+         * @brief Layer tap specifically configured for the Space key
+         * @param binding-cells 2 (layer, keycode)
+         * @return Activates layer on hold, outputs base key on tap
+         */
+        lt_spc: layer_tap_space {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_SPACE";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&mo>, <&kp>;
+        };
+
+        /**
+         * @brief Layer tap configured for standard thumb keys
+         * @param binding-cells 2 (layer, keycode)
+         * @return Activates layer on hold, outputs base key on tap
+         */
+        lt_bal: layer_tap_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_BALANCED";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            flavor = "balanced";
+            bindings = <&mo>, <&kp>;
+        };
+
+        /**
+         * @brief Layer tap configured for Caps Word integration
+         * @param binding-cells 2 (layer, macro parameter)
+         * @return Activates layer on hold, triggers Caps Word macro on tap
+         */
+        lt_cw: layer_tap_caps_word {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_CAPS_WORD";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            flavor = "balanced";
+            bindings = <&mo>, <&mac_cw>;
         };
     };
 
     macros {
-        mac_bt1: mac_bt1 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&bt BT_SEL 0>, <&to 1>;
+        /**
+         * @brief Single parameter macro to execute Caps Word
+         * @param binding-cells 1 (dummy parameter to satisfy hold-tap cell requirements)
+         * @return Triggers ZMK native caps_word behavior
+         */
+        mac_cw: mac_cw {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings = <&caps_word>;
         };
-        mac_bt2: mac_bt2 {
+
+        /**
+         * @brief Configures base layer and pairs Bluetooth Profile 1
+         * @param binding-cells 0
+         * @return Shifts base layer to Windows (1) and selects BT profile 0
+         */
+        win_bt_1: win_bt_1 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 1>, <&to 0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&to 1>, <&bt BT_SEL 0>;
         };
-        mac_bt3: mac_bt3 {
+
+        /**
+         * @brief Configures base layer and pairs Bluetooth Profile 2
+         * @param binding-cells 0
+         * @return Shifts base layer to Mac (0) and selects BT profile 1
+         */
+        mac_bt_2: mac_bt_2 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 2>, <&to 1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&to 0>, <&bt BT_SEL 1>;
         };
-        mac_bt4: mac_bt4 {
+
+        /**
+         * @brief Configures base layer and pairs Bluetooth Profile 3
+         * @param binding-cells 0
+         * @return Shifts base layer to Windows (1) and selects BT profile 2
+         */
+        win_bt_3: win_bt_3 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 3>, <&to 0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&to 1>, <&bt BT_SEL 2>;
         };
-        mac_bt5: mac_bt5 {
+
+        /**
+         * @brief Configures base layer and pairs Bluetooth Profile 4
+         * @param binding-cells 0
+         * @return Shifts base layer to Mac (0) and selects BT profile 3
+         */
+        mac_bt_4: mac_bt_4 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 4>, <&to 1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&to 0>, <&bt BT_SEL 3>;
+        };
+
+        /**
+         * @brief Configures base layer and pairs Bluetooth Profile 5
+         * @param binding-cells 0
+         * @return Shifts base layer to Windows (1) and selects BT profile 4
+         */
+        win_bt_5: win_bt_5 {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&to 1>, <&bt BT_SEL 4>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        /**
+         * @brief Simultaneous thumb keypress to trigger Bluetooth layer
+         * @param key-positions 30 and 35 representing outermost thumb keys in a 36-key matrix
+         * @return Momentary transition to BT layer (5)
+         */
+        combo_bt_layer {
+            timeout-ms = <50>;
+            key-positions = <30 35>;
+            bindings = <&mo 5>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        // Layer 0: Base Mac
-        base_mac {
-            bindings =
-    &kp Q        &kp W        &kp E        &kp R        &kp T        &kp Y  &kp U        &kp I        &kp O        &kp P
-    &hm LCTRL A  &hm LALT S   &hm LGUI D   &hm LSHFT F  &kp G        &kp H  &hm RSHFT J  &hm RGUI K   &hm RALT L   &hm RCTRL SEMI
-    &kp Z        &kp X        &kp C        &kp V        &kp B        &kp N  &kp M        &kp COMMA    &kp DOT      &kp FSLH
-                              &lt 2 TAB    &lt 3 BSPC   &lt 4 CAPS   &lt 4 SPACE  &lt 3 RET  &lt 2 ESC
+        mac_layer {
+            bindings = <
+            &kp Q        &kp W        &kp E       &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
+            &hm LCTRL A  &hm LALT S   &hm LGUI D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RGUI K  &hm RALT L   &hm RCTRL SEMI
+            &kp Z        &kp X        &kp C       &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
+                                      &lt_bal 2 TAB &lt_bal 3 BSPC &lt_cw 4 0   &lt_spc 4 SPACE &lt_bal 3 RET &lt_bal 2 ESC
             >;
         };
 
-        // Layer 1: Base Win
-        base_win {
-            bindings =
-    &kp Q        &kp W        &kp E        &kp R        &kp T        &kp Y  &kp U        &kp I        &kp O        &kp P
-    &hm LGUI A   &hm LALT S   &hm LCTRL D  &hm LSHFT F  &kp G        &kp H  &hm RSHFT J  &hm RCTRL K  &hm RALT L   &hm RGUI SEMI
-    &kp Z        &kp X        &kp C        &kp V        &kp B        &kp N  &kp M        &kp COMMA    &kp DOT      &kp FSLH
-                              &lt 2 TAB    &lt 3 BSPC   &lt 4 CAPS   &lt 4 SPACE  &lt 3 RET  &lt 2 ESC
+        win_layer {
+            bindings = <
+            &kp Q       &kp W        &kp E        &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
+            &hm LGUI A  &hm LALT S   &hm LCTRL D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RCTRL K &hm RALT L   &hm RGUI SEMI
+            &kp Z       &kp X        &kp C        &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
+                                     &lt_bal 2 TAB &lt_bal 3 BSPC &lt_cw 4 0    &lt_spc 4 SPACE &lt_bal 3 RET &lt_bal 2 ESC
             >;
         };
 
-        // Layer 2: Nav
-        nav {
-            bindings =
-    &kp C_BRI_DN  &kp C_BRI_UP  &kp C_BL_DEC  &kp C_BL_INC  &kp C_PREV   &kp C_PP      &kp C_NEXT  &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP
-    &trans        &trans        &trans        &trans        &trans       &trans        &kp LEFT    &kp DOWN    &kp UP        &kp RIGHT
-    &kp PG_DN     &kp HOME      &kp END       &kp PG_UP     &kp DEL      &kp DEL       &kp PG_UP   &kp END     &kp HOME      &kp PG_DN
-                                &trans        &trans        &trans       &trans        &trans      &trans
+        nav_layer {
+            bindings = <
+            &kp C_BRI_DN &kp C_BRI_UP &none       &none         &kp C_PREV      &kp C_PP     &kp C_NEXT    &kp C_MUTE  &kp C_VOL_DN &kp C_VOL_UP
+            &trans       &trans       &trans      &trans        &trans          &trans       &kp LEFT      &kp DOWN    &kp UP       &kp RIGHT
+            &kp PG_DN    &kp HOME     &kp END     &kp PG_UP     &kp DEL         &kp DEL      &kp PG_UP     &kp END     &kp HOME     &kp PG_DN
+                                      &trans      &trans        &trans          &trans       &trans        &trans
             >;
         };
 
-        // Layer 3: Sym
-        sym {
-            bindings =
-    &kp MINUS  &kp LS(N6)    &kp LBKT   &kp RBKT   &kp LS(N1)    &kp LS(N5)   &kp LS(N4)   &kp LS(N2)   &kp LS(N8)    &kp LS(N3)
-    &kp GRAVE  &kp LS(EQUAL) &kp LS(N9) &kp LS(N0) &kp SQT       &kp LS(SQT)  &kp LS(LBKT) &kp LS(RBKT) &kp LS(MINUS) &kp EQUAL
-    &trans     &trans        &trans     &kp LS(N7) &kp LS(BSLH)  &kp BSLH     &kp LS(GRAVE) &trans       &trans        &trans
-                             &trans     &trans     &trans        &trans       &trans       &trans
+        sym_layer {
+            bindings = <
+            &kp MINUS    &kp CARET    &kp LBKT    &kp RBKT      &kp EXCL        &kp PRCNT    &kp DLLR      &kp AT      &kp STAR     &kp HASH
+            &kp GRAVE    &kp PLUS     &kp LPAR    &kp RPAR      &kp SQT         &kp DQT      &kp LBRC      &kp RBRC    &none        &kp EQUAL
+            &none        &none        &none       &kp AMPS      &kp PIPE        &kp BSLH     &kp TILDE     &none       &none        &none
+                                      &none       &none         &none           &none        &none         &none
             >;
         };
 
-        // Layer 4: Num
-        num {
-            bindings =
-    &kp N1  &kp N2  &kp N3  &kp N4  &kp N5    &kp N6   &kp N7  &kp N8  &kp N9  &kp N0
-    &trans  &trans  &trans  &trans  &kp F11   &kp F12  &trans  &trans  &trans  &trans
-    &kp F1  &kp F2  &kp F3  &kp F4  &kp F5    &kp F6   &kp F7  &kp F8  &kp F9  &kp F10
-                    &trans  &trans  &trans    &trans   &trans  &trans
+        num_layer {
+            bindings = <
+            &kp N1       &kp N2       &kp N3      &kp N4        &kp N5          &kp N6       &kp N7        &kp N8      &kp N9       &kp N0
+            &trans       &trans       &trans      &trans        &kp F11         &kp F12      &none         &none       &none        &none
+            &kp F1       &kp F2       &kp F3      &kp F4        &kp F5          &kp F6       &kp F7        &kp F8      &kp F9       &kp F10
+                                      &trans      &trans        &trans          &trans       &trans        &trans
             >;
         };
 
-        // Layer 5: BT
         bt_layer {
-            bindings =
-    &mac_bt1  &mac_bt2  &mac_bt3  &mac_bt4  &mac_bt5   &mac_bt1  &mac_bt2  &mac_bt3  &mac_bt4      &mac_bt5
-    &trans    &trans    &trans    &trans    &trans     &trans    &trans    &trans    &trans        &bt BT_CLR
-    &trans    &trans    &trans    &trans    &trans     &trans    &trans    &trans    &out OUT_TOG  &trans
-                        &trans    &trans    &trans     &trans    &trans    &trans
+            bindings = <
+            &win_bt_1    &mac_bt_2    &win_bt_3   &mac_bt_4     &win_bt_5       &win_bt_1    &mac_bt_2     &win_bt_3   &mac_bt_4    &win_bt_5
+            &none        &none        &none       &none         &none           &none        &none         &none       &none        &bt BT_CLR
+            &none        &none        &none       &none         &none           &none        &none         &none       &out OUT_TOG &none
+                                      &none       &none         &none           &none        &none         &none
             >;
         };
     };
