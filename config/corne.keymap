@@ -61,33 +61,22 @@
         };
 
         /**
-         * @brief Layer tap configured for Key Repeat integration
-         * @param binding-cells 2 (layer, macro parameter)
-         * @return Activates layer on hold, triggers Key Repeat macro on tap
+         * @brief Custom hold-tap for Caps Word
+         * @param binding-cells 2 (layer, dummy parameter)
+         * @return Activates layer on hold, triggers Caps Word on tap
          */
-        lt_rep: layer_tap_repeat {
+        ht_caps: hold_tap_caps_word {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_REPEAT";
+            label = "HOLD_TAP_CAPS_WORD";
             #binding-cells = <2>;
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
             flavor = "balanced";
-            bindings = <&mo>, <&mac_rep>;
+            bindings = <&mo>, <&caps_word>;
         };
     };
 
     macros {
-        /**
-         * @brief Single parameter macro to execute key repeat
-         * @param binding-cells 1 (dummy parameter to satisfy hold-tap cell requirements)
-         * @return Triggers ZMK native key_repeat behavior
-         */
-        mac_rep: mac_rep {
-            compatible = "zmk,behavior-macro-one-param";
-            #binding-cells = <1>;
-            bindings = <&key_repeat>;
-        };
-
         /**
          * @brief Configures base layer and pairs Bluetooth Profile 1
          * @param binding-cells 0
@@ -169,14 +158,14 @@
         };
 
         /**
-         * @brief Simultaneous thumb keypress to trigger Caps Word
+         * @brief Simultaneous thumb keypress to trigger mouse layer
          * @param key-positions 32 and 33 representing innermost thumb keys in a 36-key matrix
-         * @return Toggles Caps Word
+         * @return Activates mouse layer
          */
-        combo_caps_word {
+        combo_mouse_layer {
             timeout-ms = <50>;
             key-positions = <32 33>;
-            bindings = <&caps_word>;
+            /* Place holder for the code to the mouse layer! */
         };
     };
 
@@ -188,7 +177,7 @@
             &kp Q        &kp W        &kp E       &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
             &hm LCTRL A  &hm LALT S   &hm LGUI D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RGUI K  &hm RALT L   &hm RCTRL SEMI
             &kp Z        &kp X        &kp C       &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
-                                      &lt_bal 2 ESC &lt_bal 3 BSPC &lt_rep 4 0  &lt_spc 4 SPACE &lt_bal 3 RET &lt_bal 2 TAB
+                                      &lt_bal 2 ESC &lt_bal 3 BSPC  &lt_spc 4 TAB &lt_spc 4 SPACE &lt_bal 3 RET &ht_caps 2 0
             >;
         };
 
@@ -197,7 +186,7 @@
             &kp Q       &kp W        &kp E        &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
             &hm LGUI A  &hm LALT S   &hm LCTRL D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RCTRL K &hm RALT L   &hm RGUI SEMI
             &kp Z       &kp X        &kp C        &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
-                                     &lt_bal 2 ESC &lt_bal 3 BSPC &lt_rep 4 0   &lt_spc 4 SPACE &lt_bal 3 RET &lt_bal 2 TAB
+                                     &lt_bal 2 ESC &lt_bal 3 BSPC  &lt_spc 4 TAB &lt_spc 4 SPACE &lt_bal 3 RET &ht_caps 2 0
             >;
         };
 
