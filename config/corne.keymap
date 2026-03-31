@@ -61,9 +61,9 @@
         };
 
         /**
-         * @brief Custom hold-tap for Caps Word
+         * @brief Custom hold-tap for Caps Word integration
          * @param binding-cells 2 (layer, dummy parameter)
-         * @return Activates layer on hold, triggers Caps Word on tap
+         * @return Activates layer on hold, triggers Caps Word wrapper on tap
          */
         ht_caps: hold_tap_caps_word {
             compatible = "zmk,behavior-hold-tap";
@@ -72,11 +72,22 @@
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
             flavor = "balanced";
-            bindings = <&mo>, <&caps_word>;
+            bindings = <&mo>, <&caps_wrap>;
         };
     };
 
     macros {
+        /**
+         * @brief Wrapper macro to absorb dummy parameters for Caps Word
+         * @param binding-cells 1 (dummy parameter to satisfy hold-tap behavior)
+         * @return Triggers native ZMK Caps Word
+         */
+        caps_wrap: caps_wrap {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings = <&caps_word>;
+        };
+
         /**
          * @brief Configures base layer and pairs Bluetooth Profile 1
          * @param binding-cells 0
@@ -155,17 +166,6 @@
             timeout-ms = <50>;
             key-positions = <30 35>;
             bindings = <&mo 5>;
-        };
-
-        /**
-         * @brief Simultaneous thumb keypress to trigger mouse layer
-         * @param key-positions 32 and 33 representing innermost thumb keys in a 36-key matrix
-         * @return Activates mouse layer
-         */
-        combo_mouse_layer {
-            timeout-ms = <50>;
-            key-positions = <32 33>;
-            /* Place holder for the code to the mouse layer! */
         };
     };
 
