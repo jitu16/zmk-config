@@ -15,10 +15,10 @@
     };
 
     behaviors {
-        /**
-         * @brief Home row modifier behavior
-         * @param binding-cells 2 (modifier, keycode)
-         * @return Outputs modifier on hold, base key on tap
+        /*
+         * Home-row modifiers
+         * Hold = modifier
+         * Tap  = normal key
          */
         hm: homerow_mods {
             compatible = "zmk,behavior-hold-tap";
@@ -30,10 +30,8 @@
             bindings = <&kp>, <&kp>;
         };
 
-        /**
-         * @brief Layer tap specifically configured for the Space key
-         * @param binding-cells 2 (layer, keycode)
-         * @return Activates layer on hold, outputs base key on tap
+        /*
+         * Layer-tap for Space/Tab
          */
         lt_spc: layer_tap_space {
             compatible = "zmk,behavior-hold-tap";
@@ -45,10 +43,8 @@
             bindings = <&mo>, <&kp>;
         };
 
-        /**
-         * @brief Layer tap configured for standard thumb keys
-         * @param binding-cells 2 (layer, keycode)
-         * @return Activates layer on hold, outputs base key on tap
+        /*
+         * Balanced layer-tap for thumb keys
          */
         lt_bal: layer_tap_balanced {
             compatible = "zmk,behavior-hold-tap";
@@ -60,10 +56,9 @@
             bindings = <&mo>, <&kp>;
         };
 
-        /**
-         * @brief Custom hold-tap for Caps Word integration
-         * @param binding-cells 2 (layer, dummy parameter)
-         * @return Activates layer on hold, triggers Caps Word wrapper on tap
+        /*
+         * Hold = Nav layer
+         * Tap  = Caps Word
          */
         ht_caps: hold_tap_caps_word {
             compatible = "zmk,behavior-hold-tap";
@@ -77,128 +72,59 @@
     };
 
     macros {
-        /**
-         * @brief Wrapper macro to absorb dummy parameters for Caps Word
-         * @param binding-cells 1 (dummy parameter to satisfy hold-tap behavior)
-         * @return Triggers native ZMK Caps Word
-         */
         caps_wrap: caps_wrap {
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
             bindings = <&caps_word>;
-        };
-
-        /**
-         * @brief Configures base layer and pairs Bluetooth Profile 1
-         * @param binding-cells 0
-         * @return Shifts base layer to Windows (1) and selects BT profile 0
-         */
-        win_bt_1: win_bt_1 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <0>;
-            tap-ms = <0>;
-            bindings = <&to 1>, <&bt BT_SEL 0>;
-        };
-
-        /**
-         * @brief Configures base layer and pairs Bluetooth Profile 2
-         * @param binding-cells 0
-         * @return Shifts base layer to Mac (0) and selects BT profile 1
-         */
-        mac_bt_2: mac_bt_2 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <0>;
-            tap-ms = <0>;
-            bindings = <&to 0>, <&bt BT_SEL 1>;
-        };
-
-        /**
-         * @brief Configures base layer and pairs Bluetooth Profile 3
-         * @param binding-cells 0
-         * @return Shifts base layer to Windows (1) and selects BT profile 2
-         */
-        win_bt_3: win_bt_3 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <0>;
-            tap-ms = <0>;
-            bindings = <&to 1>, <&bt BT_SEL 2>;
-        };
-
-        /**
-         * @brief Configures base layer and pairs Bluetooth Profile 4
-         * @param binding-cells 0
-         * @return Shifts base layer to Mac (0) and selects BT profile 3
-         */
-        mac_bt_4: mac_bt_4 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <0>;
-            tap-ms = <0>;
-            bindings = <&to 0>, <&bt BT_SEL 3>;
-        };
-
-        /**
-         * @brief Configures base layer and pairs Bluetooth Profile 5
-         * @param binding-cells 0
-         * @return Shifts base layer to Windows (1) and selects BT profile 4
-         */
-        win_bt_5: win_bt_5 {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <0>;
-            tap-ms = <0>;
-            bindings = <&to 1>, <&bt BT_SEL 4>;
         };
     };
 
     combos {
         compatible = "zmk,combos";
 
-        /**
-         * @brief Simultaneous thumb keypress to trigger Bluetooth layer
-         * @param key-positions 30 and 35 representing outermost thumb keys in a 36-key matrix
-         * @return Momentary transition to BT layer (5)
+        /*
+         * Press the two outermost thumb keys together
+         * to access the Bluetooth layer.
          */
         combo_bt_layer {
             timeout-ms = <50>;
             key-positions = <30 35>;
-            bindings = <&mo 5>;
+            bindings = <&mo 4>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        mac_layer {
+        /*
+         * Layer 0: Linux / Arch
+         *
+         * This is exactly your current working Linux layout.
+         */
+        linux_layer {
             bindings = <
-            &kp Q        &kp W        &kp E       &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
-            &hm LCTRL A  &hm LALT S   &hm LGUI D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RGUI K  &hm RALT L   &hm RCTRL SEMI
-            &kp Z        &kp X        &kp C       &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
-                                      &lt_bal 2 ESC &lt_bal 3 BSPC  &lt_spc 4 TAB &lt_spc 4 SPACE &lt_bal 3 RET &ht_caps 2 0
+            &kp Q        &kp W        &kp E        &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
+            &hm LGUI A   &hm LALT S   &hm LCTRL D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RCTRL K  &hm RALT L   &hm RGUI SEMI
+            &kp Z        &kp X        &kp C        &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
+                                      &lt_bal 1 ESC &lt_bal 2 BSPC &lt_spc 3 TAB &lt_spc 3 SPACE &lt_bal 2 RET &ht_caps 1 0
             >;
         };
 
-        win_layer {
-            bindings = <
-            &kp Q       &kp W        &kp E        &kp R         &kp T           &kp Y        &kp U         &kp I       &kp O        &kp P
-            &hm LGUI A  &hm LALT S   &hm LCTRL D  &hm LSHFT F   &kp G           &kp H        &hm RSHFT J   &hm RCTRL K &hm RALT L   &hm RGUI SEMI
-            &kp Z       &kp X        &kp C        &kp V         &kp B           &kp N        &kp M         &kp COMMA   &kp DOT      &kp FSLH
-                                     &lt_bal 2 ESC &lt_bal 3 BSPC  &lt_spc 4 TAB &lt_spc 4 SPACE &lt_bal 3 RET &ht_caps 2 0
-            >;
-        };
-
+        /*
+         * Layer 1: Navigation
+         */
         nav_layer {
             bindings = <
             &kp C_BRI_DN &kp C_BRI_UP &none       &none         &kp C_PREV      &kp C_PP     &kp C_NEXT    &kp C_MUTE  &kp C_VOL_DN &kp C_VOL_UP
-            &trans       &trans       &trans      &trans        &trans          &kp LEFT     &kp DOWN      &kp UP      &kp RIGHT    &trans
-            &kp DEL      &kp END      &kp PG_UP   &kp PG_DN     &kp HOME        &kp HOME     &kp PG_DN     &kp PG_UP   &kp END      &kp DEL
-                                      &trans      &trans        &trans          &trans       &trans        &trans
+            &trans       &trans       &trans       &trans        &trans          &kp LEFT     &kp DOWN      &kp UP      &kp RIGHT    &trans
+            &kp DEL      &kp END      &kp PG_UP    &kp PG_DN     &kp HOME        &kp HOME     &kp PG_DN     &kp PG_UP   &kp END      &kp DEL
+                                      &trans       &trans        &trans          &trans       &trans        &trans
             >;
         };
 
+        /*
+         * Layer 2: Symbols
+         */
         sym_layer {
             bindings = <
             &kp MINUS    &kp CARET    &kp LBKT    &kp RBKT      &kp EXCL        &kp PRCNT    &kp DLLR      &kp AT      &kp STAR     &kp HASH
@@ -208,21 +134,31 @@
             >;
         };
 
+        /*
+         * Layer 3: Numbers / Function keys
+         */
         num_layer {
             bindings = <
             &kp N1       &kp N2       &kp N3      &kp N4        &kp N5          &kp N6       &kp N7        &kp N8      &kp N9       &kp N0
-            &trans       &trans       &trans      &trans        &kp F11         &kp F12      &none         &none       &none        &none
+            &trans       &trans       &trans       &trans        &kp F11         &kp F12      &none         &none       &none        &none
             &kp F1       &kp F2       &kp F3      &kp F4        &kp F5          &kp F6       &kp F7        &kp F8      &kp F9       &kp F10
                                       &trans      &trans        &trans          &trans       &trans        &trans
             >;
         };
 
+        /*
+         * Layer 4: Bluetooth
+         *
+         * All five profiles now use the same Linux keymap.
+         * Selecting a Bluetooth profile no longer changes
+         * the base layer.
+         */
         bt_layer {
             bindings = <
-            &win_bt_1    &mac_bt_2    &win_bt_3   &mac_bt_4     &win_bt_5       &win_bt_1    &mac_bt_2     &win_bt_3   &mac_bt_4    &win_bt_5
-            &none        &none        &none       &none         &none           &none        &none         &none       &none        &bt BT_CLR
-            &none        &none        &none       &none         &none           &none        &none         &none       &out OUT_TOG &none
-                                      &none       &none         &none           &none        &none         &none
+            &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
+            &none        &none        &none        &none        &none           &none        &none        &none        &none        &bt BT_CLR
+            &none        &none        &none        &none        &none           &none        &none        &none        &out OUT_TOG &none
+                                      &none        &none        &none           &none        &none        &none
             >;
         };
     };
